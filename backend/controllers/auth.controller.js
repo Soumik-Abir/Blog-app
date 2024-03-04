@@ -4,17 +4,14 @@ import { errorHandler } from '../utils/error.js';
 import jwt from 'jsonwebtoken';
 
 export const signup = async (req, res, next) => {
-  const { username, email, password } = req.body;
+  const { username, email, password, confirmPassword, terms } = req.body;
 
-  if (
-    !username ||
-    !email ||
-    !password ||
-    username === '' ||
-    email === '' ||
-    password === ''
-  ) {
-    next(errorHandler(400, 'All fields are required'));
+  if (!username || !email || !password || !confirmPassword || !terms) {
+    return next(errorHandler(400, 'All fields are required'));
+  }
+
+  if (password !== confirmPassword) {
+    return next(errorHandler(400, "Passwords don't match"));
   }
 
   const hashedPassword = bcryptjs.hashSync(password, 10);
@@ -33,6 +30,7 @@ export const signup = async (req, res, next) => {
   }
 };
 
+
 export const signin = async (req, res, next) => {
   const { email, password } = req.body;
 
@@ -50,7 +48,7 @@ export const signin = async (req, res, next) => {
       return next(errorHandler(400, 'Invalid password'));
     }
     const token = jwt.sign(
-      { id: validUser._id},
+      { id: validUser._id, isAdmin: validUser.isAdmin },
       process.env.JWT_SECRET
     );
 
