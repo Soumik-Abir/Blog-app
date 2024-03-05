@@ -1,7 +1,10 @@
-
 ### Blog App
 
 This is a full-stack web application for managing a blog. It allows users to create, read, update, and delete blog posts, as well as interact with other users through comments and likes.
+
+## **Project Deployment Lin**k: -
+
+[https://blog-app-4x0y.onrender.com/](https://blog-app-4x0y.onrender.com/)
 
 #### Technologies Used:
 
