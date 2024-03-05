@@ -1,23 +1,18 @@
-import React, { useState } from "react";
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Oauth from "../components/OAuth";
+import OAuth from "../components/OAuth";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
-
 export default function SignUp() {
   const [formData, setFormData] = useState({});
-  const [termsChecked, setTermsChecked] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
-  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
-  };
-
-  const handleCheckboxChange = () => {
-    setTermsChecked(!termsChecked);
   };
 
   const togglePasswordVisibility = () => {
@@ -26,43 +21,22 @@ export default function SignUp() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const { password, confirmPassword, ...restFormData } = formData;
-
-    if (
-      !formData.username ||
-      !formData.email ||
-      !password ||
-      !confirmPassword ||
-      !termsChecked
-    ) {
-      return setErrorMessage(
-        "Please fill out all fields and accept the terms and conditions."
-      );
+    if (!formData.username || !formData.email || !formData.password) {
+      return setErrorMessage("Please fill out all fields.");
     }
-
-    if (password !== confirmPassword) {
-      return setErrorMessage("Passwords don't match.");
-    }
-
     try {
       setLoading(true);
       setErrorMessage(null);
-
       const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(restFormData),
+        body: JSON.stringify(formData),
       });
-
       const data = await res.json();
-
       if (data.success === false) {
         return setErrorMessage(data.message);
       }
-
       setLoading(false);
-
       if (res.ok) {
         navigate("/sign-in");
       }
@@ -71,6 +45,7 @@ export default function SignUp() {
       setLoading(false);
     }
   };
+
   return (
     <div className="min-h-screen mt-20">
       <div className="flex p-3 max-w-3xl mx-auto flex-col md:flex-row md:items-center gap-5">
@@ -83,8 +58,8 @@ export default function SignUp() {
             Blog
           </Link>
           <p className="text-sm mt-5">
-            This is a blog post project. You can sign up with your email and
-            password or with Google.
+            This is a demo project. You can sign up with your email and password
+            or with Google.
           </p>
         </div>
         {/* right */}
@@ -114,36 +89,15 @@ export default function SignUp() {
               <div className="flex justify-between">
                 <TextInput
                   type={showPassword ? "text" : "password"}
-                  placeholder="Password"
+                  placeholder="*******"
                   id="password"
                   onChange={handleChange}
                   className="w-3/4"
                 />
-                <Button type="button" onClick={togglePasswordVisibility}>
+                <Button type="button" onClick={togglePasswordVisibility} gradientDuoTone="purpleToPink">
                   {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
                 </Button>
               </div>
-            </div>
-            <div>
-              <Label value="Confirm password" />
-              <TextInput
-                type="password"
-                placeholder="Confirm Password"
-                id="confirmPassword"
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <input
-                type="checkbox"
-                id="terms"
-                checked={termsChecked}
-                onChange={handleCheckboxChange}
-              />
-              <Label value="Terms & Conditions" className="ml-2" />
-              <label htmlFor="terms" className="m-2">
-                & I agree to the <Link to="/">terms and conditions</Link>.
-              </label>
             </div>
             <Button
               gradientDuoTone="purpleToPink"
@@ -159,7 +113,7 @@ export default function SignUp() {
                 "Sign Up"
               )}
             </Button>
-            <Oauth />
+            <OAuth />
           </form>
           <div className="flex gap-2 text-sm mt-5">
             <span>Have an account?</span>

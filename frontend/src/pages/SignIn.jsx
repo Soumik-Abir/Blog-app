@@ -89,7 +89,7 @@ export default function SignIn() {
                   onChange={handleChange}
                   className="w-3/4"
                 />
-                <Button type="button" onClick={togglePasswordVisibility}>
+                <Button type="button" onClick={togglePasswordVisibility} gradientDuoTone="purpleToPink">
                   {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
                 </Button>
               </div>
