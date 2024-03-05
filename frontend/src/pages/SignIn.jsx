@@ -8,15 +8,23 @@ import {
   signInFailure,
 } from '../redux/user/userSlice';
 import OAuth from '../components/OAuth';
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
   const { loading, error: errorMessage } = useSelector((state) => state.user);
+  const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
   };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.email || !formData.password) {
@@ -72,13 +80,19 @@ export default function SignIn() {
               />
             </div>
             <div>
-              <Label value='Your password' />
-              <TextInput
-                type='password'
-                placeholder='**********'
-                id='password'
-                onChange={handleChange}
-              />
+              <Label value="Your password" />
+              <div className="flex justify-between">
+                <TextInput
+                  type={showPassword ? "text" : "password"}
+                  placeholder="*******"
+                  id="password"
+                  onChange={handleChange}
+                  className="w-3/4"
+                />
+                <Button type="button" onClick={togglePasswordVisibility}>
+                  {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
+                </Button>
+              </div>
             </div>
             <Button
               gradientDuoTone='purpleToPink'

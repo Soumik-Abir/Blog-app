@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
-import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react';
-import { Link, useNavigate } from 'react-router-dom';
-import Oauth from '../components/OAuth';
+import React, { useState } from "react";
+import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
+import { Link, useNavigate } from "react-router-dom";
+import Oauth from "../components/OAuth";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 
 export default function SignUp() {
   const [formData, setFormData] = useState({});
   const [termsChecked, setTermsChecked] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -18,13 +20,25 @@ export default function SignUp() {
     setTermsChecked(!termsChecked);
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const { password, confirmPassword, ...restFormData } = formData;
 
-    if (!formData.username || !formData.email || !password || !confirmPassword || !termsChecked) {
-      return setErrorMessage('Please fill out all fields and accept the terms and conditions.');
+    if (
+      !formData.username ||
+      !formData.email ||
+      !password ||
+      !confirmPassword ||
+      !termsChecked
+    ) {
+      return setErrorMessage(
+        "Please fill out all fields and accept the terms and conditions."
+      );
     }
 
     if (password !== confirmPassword) {
@@ -35,9 +49,9 @@ export default function SignUp() {
       setLoading(true);
       setErrorMessage(null);
 
-      const res = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(restFormData),
       });
 
@@ -50,7 +64,7 @@ export default function SignUp() {
       setLoading(false);
 
       if (res.ok) {
-        navigate('/sign-in');
+        navigate("/sign-in");
       }
     } catch (error) {
       setErrorMessage(error.message);
@@ -97,12 +111,18 @@ export default function SignUp() {
             </div>
             <div>
               <Label value="Your password" />
-              <TextInput
-                type="password"
-                placeholder="Password"
-                id="password"
-                onChange={handleChange}
-              />
+              <div className="flex justify-between">
+                <TextInput
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  id="password"
+                  onChange={handleChange}
+                  className="w-3/4"
+                />
+                <Button type="button" onClick={togglePasswordVisibility}>
+                  {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
+                </Button>
+              </div>
             </div>
             <div>
               <Label value="Confirm password" />
@@ -115,14 +135,14 @@ export default function SignUp() {
             </div>
             <div>
               <input
-                type='checkbox'
-                id='terms'
+                type="checkbox"
+                id="terms"
                 checked={termsChecked}
                 onChange={handleCheckboxChange}
               />
-              <Label value='Terms & Conditions'  className='ml-2'/>
-              <label htmlFor='terms' className='m-2'>
-                & I agree to the <Link to='/'>terms and conditions</Link>.
+              <Label value="Terms & Conditions" className="ml-2" />
+              <label htmlFor="terms" className="m-2">
+                & I agree to the <Link to="/">terms and conditions</Link>.
               </label>
             </div>
             <Button
